@@ -10,7 +10,7 @@ for row in file.readlines():
     data.append(elements)
 file.close()
 
-newCSV = open('Polygence-Data\filtered.csv', 'w', newline='')
+newCSV = open('Polygence-Data\\filtered.csv', 'w', newline='')
 csvWriter = csv.writer(newCSV, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 csvWriter.writerow(['Latitude', 'Longitude', 'Year', 'Month', 'Day', 'Time', 'Oxygen', 'Phosphate', 'Silicate', 'Nitrate'])
 
