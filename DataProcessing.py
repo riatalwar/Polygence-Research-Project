@@ -1,6 +1,6 @@
 import csv
 
-file = open('Polygence-Data\OxygenPhosphateSilicateNitrate.csv')
+file = open('Polygence-Data\OxygenPhosphateSilicateNitrate.csv') # must run from \Polygence-Research-Project\ directory
 data = []
 # read in data
 for row in file.readlines():
@@ -10,11 +10,13 @@ for row in file.readlines():
     data.append(elements)
 file.close()
 
+# open new file for filtered data
 newCSV = open('Polygence-Data\\filtered.csv', 'w', newline='')
 csvWriter = csv.writer(newCSV, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 csvWriter.writerow(['Latitude', 'Longitude', 'Year', 'Month', 'Day', 'Time', 'Oxygen', 'Phosphate', 'Silicate', 'Nitrate'])
 
 # gather desired data
+# set desired vars
 rowNum = 0
 LOC_TIME_VAR = ['Latitude', 'Longitude', 'Year', 'Month', 'Day', 'Time']
 ENV_VAR = ['Oxygen', 'Phosphate', 'Silicate', 'Nitrate']
@@ -27,6 +29,8 @@ while rowNum < len(data):
 
     while not newgroup:
         rowNum += 1
+        if rowNum >= len(data):
+            quit()
         row = data[rowNum]
 
         # check if one of desired variables exists in row
@@ -36,6 +40,12 @@ while rowNum < len(data):
                 break
         
         if row[0] == 'VARIABLES':
+            # check if data is within desired range
+            if not (float(outData['Latitude']) > 32 and float(outData['Latitude']) < 44):
+                break
+            if not (float(outData['Longitude']) > 129 and float(outData['Longitude']) < 143):
+                break
+
             # get indexes for each environmental variable
             envVarIndex = []
             for var in ENV_VAR:
@@ -75,7 +85,7 @@ while rowNum < len(data):
                 rowNum += 1
                 row = data[rowNum]
                 newgroup = row[0].startswith('END OF VARIABLES SECTION')
-
+    # go to next row after section ends
     rowNum += 1
 
 
