@@ -1,5 +1,6 @@
 library(vegan)
 library(tidyverse)
+library(pheatmap)
 
 # load all data
 setwd("C:/Users/riata/Documents/src/Polygence-Research-Project/") # set directory to file location
@@ -14,6 +15,7 @@ ma = as.matrix(ibs)
 hc=hclust(as.dist(ma),"ave")
 plot(hc)
 
+pheatmap(ma)
 
 # Plot in PCA space 
 # Capscale creates a dbRDA - distance-based-RDA, this is similar to PCoA - object 
@@ -28,8 +30,17 @@ metaenv <- left_join(meta, envData, by=c("Origin"="Location.Name")) # merge envi
 score_meta <- left_join(score_dist, metaenv) # merge meta/environmental data on organism ID
 
 # Color graph with gradient based on env variable (change var using color)
-ggplot(score_meta, aes(x=MDS1, y =MDS2, color = Salinity..ppt.)) + 
+ggplot(score_meta, aes(x=MDS1, y =MDS2, color = Origin)) + 
   geom_point(size = 2, alpha = .8) + 
   theme_classic() + coord_equal() + 
   geom_hline(yintercept = 0, col = 'grey', lty = 'dashed') + 
   geom_vline(col = 'grey', xintercept = 0, lty = 'dashed')
+
+# Create RDA for specific variables
+ma.sub = ma[rownames(ma) %in% metaenv$ID, colnames(ma) %in% metaenv$ID]
+rda=capscale(ma.sub~Avg..Sea.Surface....C.+Salinity..ppt., metaenv)
+plot(rda)
+
+# Get coordinates of points on plot
+coords <- data.frame(score_meta$ID, score_meta$MDS1, score_meta$MDS2)
+write.csv(coords, file="C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/Coordinates.csv", row.names = FALSE)
