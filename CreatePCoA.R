@@ -7,9 +7,13 @@ setwd("C:/Users/riata/Documents/src/Polygence-Research-Project/") # set director
 ibs = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/DistanceMatrix.csv", row=1) # get distance matrix data
 nam = read.table("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/DolphinNames") # get dolphin name data
 meta = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/Metadata.csv", fill=TRUE) # get metadata
-envData = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/EnvironmentalData.csv", fill=TRUE) # get environmental data
+envCSV = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/EnvironmentalData.csv", fill=TRUE, row=1) # get environmental data
 
 ma = as.matrix(ibs)
+envMa = as.matrix(envData)
+# standardize data
+envStand = decostand(envMa, "range")
+envDF = as.data.frame(envStand)
 
 # create hierarchical clustering based on distance matrix
 hc = hclust(as.dist(ma),"ave")
@@ -26,7 +30,8 @@ plot(pp0)
 score_dist <- as.data.frame(pp0$CA$u)
 score_dist$ID = rownames(score_dist)
 
-metaenv <- left_join(meta, envData, by=c("Origin"="Location")) # merge environmental data with metadata by location
+# join data
+metaenv <- left_join(meta, rownames_to_column(envDF), by=c("Origin"="rowname"), copy=TRUE) # merge environmental data with metadata by location
 score_meta <- left_join(score_dist, metaenv) # merge meta/environmental data on organism ID
 
 # Color graph with gradient based on env variable (change var using color)
