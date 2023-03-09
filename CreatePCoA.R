@@ -10,7 +10,7 @@ meta = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygen
 envCSV = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/EnvironmentalData.csv", fill=TRUE, row=1) # get environmental data
 
 ma = as.matrix(ibs)
-envMa = as.matrix(envData)
+envMa = as.matrix(envCSV)
 # standardize data
 envStand = decostand(envMa, "range")
 envDF = as.data.frame(envStand)
