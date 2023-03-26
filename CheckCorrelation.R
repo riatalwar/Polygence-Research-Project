@@ -14,10 +14,8 @@ envMa = as.matrix(envCSV)
 envStand = decostand(envMa, "range")
 envDF = as.data.frame(envStand)
 
-data <- left_join(meta, rownames_to_column(envDF), by=c("Origin"="rowname"), copy=TRUE) # merge environmental data with metadata by location
-
 # check if variables are correlated with each other
-cor(data$Avg.Sea.Surface.Temp, data$Salinity)
+cor.test(envDF$Current.Direction, envDF$Current.Speed)
 # Genetic.Cluster
 # Current.Direction
 # Current.Speed
