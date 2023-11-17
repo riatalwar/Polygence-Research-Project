@@ -1,14 +1,16 @@
 library(vegan)
 library(tidyverse)
+
 meta = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/Metadata.csv", fill=TRUE) # get metadata
+meta = filter(meta, meta$Year.Captured.Stranded >= 2010) # filter to recent organism data
 envCSV = read.csv("C:/Users/riata/Documents/src/Polygence-Research-Project/Polygence-Data/EnvironmentalData.csv", fill=TRUE, row=1) # get environmental data
 
 envMa = as.matrix(envCSV)
 envStand = decostand(envMa, "range")
 envDF = as.data.frame(envStand)
-data <- left_join(meta, rownames_to_column(envDF), by=c("Origin"="rowname"), copy=TRUE) # merge environmental data with metadata by location
+metaenv <- left_join(meta, rownames_to_column(envDF), by=c("Origin"="rowname"), copy=TRUE) # merge environmental data with metadata by location
 
-data$Genetic.Cluster <- factor(data$Genetic.Cluster)
+metaenv$Genetic.Cluster <- factor(metaenv$Genetic.Cluster)
 
 #T-Tests
 #A t-test tests if the means of two different groups are
@@ -30,8 +32,8 @@ data$Genetic.Cluster <- factor(data$Genetic.Cluster)
 ##HOW TO DO IT###
 #data here is your merged metadata and environmental data for the samples 
 #I think it's called the same thing in your random forest code
-group1_data = data[data$Genetic.Cluster == 1,]
-group2_data = data[data$Genetic.Cluster == 2,]
+group1_data = metaenv[metaenv$Genetic.Cluster == 1,]
+group2_data = metaenv[metaenv$Genetic.Cluster == 2,]
 #this is the actual test, you can replace Current.Speed with any variable
 #that's in your dataframe
 t.test(group1_data$Polybrominated.Diphenyl.Ethers, group2_data$Polybrominated.Diphenyl.Ethers)
