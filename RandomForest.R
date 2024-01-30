@@ -32,6 +32,8 @@ pred = predict(rf, newdata=test)
 cm = table(test[,"Genetic.Cluster"], pred)
 table(cm)
 varImpPlot(rf)
+importance(rf)
 
 # create boxplot of variable distribution
 metaenv %>% ggplot(aes(group = Genetic.Cluster, y = Current.Speed)) + geom_boxplot()
+# http://127.0.0.1:31195/graphics/plot_zoom_png?width=410&height=891
